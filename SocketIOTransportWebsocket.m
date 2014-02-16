@@ -59,24 +59,12 @@ static NSString* kSecureSocketPortURL = @"wss://%@:%d/socket.io/1/websocket/%@";
 
 - (void) open
 {
-    NSString *urlStr;
-    NSString *format;
-    if (delegate.port) {
-        format = delegate.useSecure ? kSecureSocketPortURL : kInsecureSocketPortURL;
-        urlStr = [NSString stringWithFormat:format, delegate.host, delegate.port, delegate.sid];
-    }
-    else {
-        format = delegate.useSecure ? kSecureSocketURL : kInsecureSocketURL;
-        urlStr = [NSString stringWithFormat:format, delegate.host, delegate.sid];
-    }
-    NSURL *url = [NSURL URLWithString:urlStr];
-    
-    _webSocket = nil;
-    
-    _webSocket = [[SRWebSocket alloc] initWithURL:url];
-    _webSocket.delegate = self;
-    DEBUGLOG(@"Opening %@", url);
-    [_webSocket open];
+    [self openWithVoIPEnabled:NO];
+}
+
+- (void) openForVoIP
+{
+    [self openWithVoIPEnabled:YES];
 }
 
 - (void) dealloc
@@ -131,6 +119,35 @@ static NSString* kSecureSocketPortURL = @"wss://%@:%d/socket.io/1/websocket/%@";
                                                    code:SocketIOWebSocketClosed
                                                userInfo:nil]];
     }
+}
+
+#pragma mark -
+#pragma mark Private methdos
+
+- (void) openWithVoIPEnabled:(BOOL)voipEnabled
+{
+    NSString *urlStr;
+    NSString *format;
+    if (delegate.port) {
+        format = delegate.useSecure ? kSecureSocketPortURL : kInsecureSocketPortURL;
+        urlStr = [NSString stringWithFormat:format, delegate.host, delegate.port, delegate.sid];
+    }
+    else {
+        format = delegate.useSecure ? kSecureSocketURL : kInsecureSocketURL;
+        urlStr = [NSString stringWithFormat:format, delegate.host, delegate.sid];
+    }
+    NSURL *url = [NSURL URLWithString:urlStr];
+    
+    _webSocket = nil;
+    
+    _webSocket = [[SRWebSocket alloc] initWithURL:url];
+    _webSocket.delegate = self;
+    
+    DEBUGLOG(@"Opening %@", url);
+    if (voipEnabled)
+        [_webSocket openForVoIP];
+    else
+        [_webSocket open];
 }
 
 @end

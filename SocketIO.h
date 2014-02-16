@@ -109,6 +109,8 @@ typedef enum {
 - (void) connectToHost:(NSString *)host onPort:(NSInteger)port withParams:(NSDictionary *)params withNamespace:(NSString *)endpoint;
 - (void) connectToHost:(NSString *)host onPort:(NSInteger)port withParams:(NSDictionary *)params withNamespace:(NSString *)endpoint withConnectionTimeout: (NSTimeInterval) connectionTimeout;
 
+- (void) useForVoIP;
+
 - (void) disconnect;
 - (void) disconnectForced;
 

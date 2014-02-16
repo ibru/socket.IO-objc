@@ -54,6 +54,8 @@ NSString* const SocketIOException = @"SocketIOException";
 
 @interface SocketIO ()
 
+@property (nonatomic, assign) BOOL isForVoIP;
+
 @end
 
 # pragma mark -
@@ -70,6 +72,7 @@ NSString* const SocketIOException = @"SocketIOException";
         _ackCount = 0;
         _acks = [[NSMutableDictionary alloc] init];
         _returnAllDataFromAck = NO;
+        _isForVoIP = YES;
     }
     return self;
 }
@@ -138,6 +141,11 @@ NSString* const SocketIOException = @"SocketIOException";
             [self connection:_handshake didFailWithError:nil];
         }
     }
+}
+
+- (void) useForVoIP
+{
+    self.isForVoIP = YES;
 }
 
 - (void) disconnect
@@ -764,7 +772,10 @@ NSString* const SocketIOException = @"SocketIOException";
         return;
     }
     
-    [_transport open];
+    if (self.isForVoIP)
+        [_transport openForVoIP];
+    else
+        [_transport open];
 }
 
 #if DEBUG_CERTIFICATE

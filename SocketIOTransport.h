@@ -41,6 +41,7 @@
 
 - (id) initWithDelegate:(id <SocketIOTransportDelegate>)delegate;
 - (void) open;
+- (void) openForVoIP;
 - (void) close;
 - (BOOL) isReady;
 - (void) send:(NSString *)request;
