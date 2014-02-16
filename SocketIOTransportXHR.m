@@ -24,9 +24,11 @@
 #import "SocketIOTransportXHR.h"
 #import "SocketIO.h"
 
-#define DEBUG_LOGS 0
+#ifndef SOCKETIO_DEBUG_LOGS
+#define SOCKETIO_DEBUG_LOGS 0
+#endif
 
-#if DEBUG_LOGS
+#if SOCKETIO_DEBUG_LOGS
 #define DEBUGLOG(...) NSLog(__VA_ARGS__)
 #else
 #define DEBUGLOG(...)

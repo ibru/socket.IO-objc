@@ -28,13 +28,13 @@
 #import "SocketIOTransportWebsocket.h"
 #import "SocketIOTransportXHR.h"
 
-#ifndef DEBUG_LOGS
-#define DEBUG_LOGS 1
+#ifndef SOCKETIO_DEBUG_LOGS
+#define SOCKETIO_DEBUG_LOGS 1
 #endif
 
 #define DEBUG_CERTIFICATE 1
 
-#if DEBUG_LOGS
+#if SOCKETIO_DEBUG_LOGS
 #define DEBUGLOG(...) NSLog(__VA_ARGS__)
 #else
 #define DEBUGLOG(...)
@@ -53,20 +53,6 @@ NSString* const SocketIOException = @"SocketIOException";
 # pragma mark SocketIO's private interface
 
 @interface SocketIO ()
-
-- (void) setTimeout;
-- (void) onTimeout;
-
-- (void) onConnect:(SocketIOPacket *)packet;
-- (void) onDisconnect:(NSError *)error;
-
-- (void) sendDisconnect;
-- (void) sendHeartbeat;
-- (void) send:(SocketIOPacket *)packet;
-
-- (NSString *) addAcknowledge:(SocketIOCallback)function;
-- (void) removeAcknowledgeForKey:(NSString *)key;
-- (NSMutableArray*) getMatchesFrom:(NSString*)data with:(NSString*)regex;
 
 @end
 
