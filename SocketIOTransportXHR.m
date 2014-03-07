@@ -39,11 +39,13 @@ static NSString* kSecureXHRURL = @"https://%@/socket.io/1/xhr-polling/%@";
 static NSString* kInsecureXHRPortURL = @"http://%@:%d/socket.io/1/xhr-polling/%@";
 static NSString* kSecureXHRPortURL = @"https://%@:%d/socket.io/1/xhr-polling/%@";
 
-@interface SocketIOTransportXHR (Private)
-- (void) checkAndStartPoll;
-- (void) poll:(NSString *)data;
-- (void) poll:(NSString *)data retryNumber:(int)retry;
+@interface SocketIOTransportXHR ()
+
+@property (nonatomic, assign) BOOL shouldUseVoIP;
+
 @end
+
+#pragma mark -
 
 @implementation SocketIOTransportXHR
 
@@ -57,23 +59,19 @@ static NSString* kSecureXHRPortURL = @"https://%@:%d/socket.io/1/xhr-polling/%@"
         self.delegate = delegate_;
         _data = [[NSMutableData alloc] init];
         _polls = [[NSMutableDictionary alloc] init];
+        _shouldUseVoIP = NO;
     }
     return self;
 }
 
 - (void) open
 {
-    NSString *format;
-    if (delegate.port) {
-        format = delegate.useSecure ? kSecureXHRPortURL : kInsecureXHRPortURL;
-        _url = [NSString stringWithFormat:format, delegate.host, delegate.port, delegate.sid];
-    }
-    else {
-        format = delegate.useSecure ? kSecureXHRURL : kInsecureXHRURL;
-        _url = [NSString stringWithFormat:format, delegate.host, delegate.sid];
-    }
-    DEBUGLOG(@"Opening XHR @ %@", _url);
-    [self poll:nil];
+    [self openWithVoIPEnabled:NO];
+}
+
+- (void) openForVoIP
+{
+    [self openWithVoIPEnabled:YES];
 }
 
 - (void) close
@@ -157,8 +155,11 @@ static NSString* kSecureXHRPortURL = @"https://%@:%d/socket.io/1/xhr-polling/%@"
     }
     [req setValue:@"Keep-Alive" forHTTPHeaderField:@"Connection"];
     
+    if (self.shouldUseVoIP)
+        req.networkServiceType = NSURLNetworkServiceTypeVoIP;
+    
     NSURLConnection *conn = [[NSURLConnection alloc] initWithRequest:req delegate:self];
-
+    
     // add pollData to polls dictionary
     NSMutableDictionary *pollData = [[NSMutableDictionary alloc] init];
     [pollData setObject:[NSNumber numberWithInt:retry] forKey:@"retries"];
@@ -167,6 +168,27 @@ static NSString* kSecureXHRPortURL = @"https://%@:%d/socket.io/1/xhr-polling/%@"
     [_polls setObject:pollData forKey:conn.description];
     
     [conn start];
+}
+
+- (void) openWithVoIPEnabled:(BOOL)voipEnabled
+{
+    NSString *format;
+    if (delegate.port) {
+        format = delegate.useSecure ? kSecureXHRPortURL : kInsecureXHRPortURL;
+        _url = [NSString stringWithFormat:format, delegate.host, delegate.port, delegate.sid];
+    }
+    else {
+        format = delegate.useSecure ? kSecureXHRURL : kInsecureXHRURL;
+        _url = [NSString stringWithFormat:format, delegate.host, delegate.sid];
+    }
+    
+    DEBUGLOG(@"Opening XHR @ %@", _url);
+    
+    self.shouldUseVoIP = voipEnabled;
+    if (self.shouldUseVoIP)
+        DEBUGLOG(@"Using for VoIP");
+    
+    [self poll:nil];
 }
 
 

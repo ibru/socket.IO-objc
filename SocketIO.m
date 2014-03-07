@@ -72,7 +72,8 @@ NSString* const SocketIOException = @"SocketIOException";
         _ackCount = 0;
         _acks = [[NSMutableDictionary alloc] init];
         _returnAllDataFromAck = NO;
-        _isForVoIP = YES;
+        _isForVoIP = NO;
+        _preferedTransportType = SocketIOPreferedTransportTypeNone;
     }
     return self;
 }
@@ -729,11 +730,14 @@ NSString* const SocketIOException = @"SocketIOException";
         NSArray *transports = [t componentsSeparatedByString:@","];
         DEBUGLOG(@"transports: %@", transports);
         
-        if ([transports indexOfObject:@"websocket"] != NSNotFound) {
+        if (self.preferedTransportType != SocketIOPreferedTransportTypeNone)
+            DEBUGLOG(@"prefered transport type: %@", self.preferedTransportType == SocketIOPreferedTransportTypeWebSockets ? @"WebSockets" : @"XHR-Polling");
+        
+        if (self.preferedTransportType != SocketIOPreferedTransportTypeXHRPolling && [transports containsObject:@"websocket"]) {
             DEBUGLOG(@"websocket supported -> using it now");
             _transport = [[SocketIOTransportWebsocket alloc] initWithDelegate:self];
         }
-        else if ([transports indexOfObject:@"xhr-polling"] != NSNotFound) {
+        else if ([transports containsObject:@"xhr-polling"]) {
             DEBUGLOG(@"xhr polling supported -> using it now");
             _transport = [[SocketIOTransportXHR alloc] initWithDelegate:self];
         }

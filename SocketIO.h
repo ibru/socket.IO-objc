@@ -42,6 +42,12 @@ typedef enum {
     SocketIODataCouldNotBeSend = -7
 } SocketIOErrorCodes;
 
+typedef NS_ENUM(NSInteger, SocketIOPreferedTransportType) {
+    SocketIOPreferedTransportTypeNone,
+    SocketIOPreferedTransportTypeWebSockets,
+    SocketIOPreferedTransportTypeXHRPolling,
+};
+
 
 @protocol SocketIODelegate <NSObject>
 @optional
@@ -102,6 +108,8 @@ typedef enum {
 @property (nonatomic, readonly) BOOL isConnected, isConnecting;
 @property (nonatomic, weak) id<SocketIODelegate> delegate;
 @property (nonatomic) BOOL returnAllDataFromAck;
+
+@property (nonatomic, assign) SocketIOPreferedTransportType preferedTransportType;
 
 - (id) initWithDelegate:(id<SocketIODelegate>)delegate;
 - (void) connectToHost:(NSString *)host onPort:(NSInteger)port;

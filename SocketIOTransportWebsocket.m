@@ -122,7 +122,7 @@ static NSString* kSecureSocketPortURL = @"wss://%@:%d/socket.io/1/websocket/%@";
 }
 
 #pragma mark -
-#pragma mark Private methdos
+#pragma mark Private methods
 
 - (void) openWithVoIPEnabled:(BOOL)voipEnabled
 {
