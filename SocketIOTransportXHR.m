@@ -222,7 +222,7 @@ static NSString* kSecureXHRPortURL = @"https://%@:%d/socket.io/1/xhr-polling/%@"
     }
     else {
         NSMutableDictionary *errorInfo = [[NSMutableDictionary alloc] init];
-        [errorInfo setValue:[error localizedDescription] forKey:@"reason"];
+        [errorInfo setValue:[error localizedDescription] forKey:NSLocalizedDescriptionKey];
         [errorInfo setValue:data forKey:@"data"];
         
         if ([delegate respondsToSelector:@selector(onError:)]) {
