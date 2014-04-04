@@ -109,6 +109,7 @@ typedef NS_ENUM(NSInteger, SocketIOPreferedTransportType) {
 @property (nonatomic, weak) id<SocketIODelegate> delegate;
 @property (nonatomic) BOOL returnAllDataFromAck;
 
+@property (nonatomic, readonly) NSArray *availableTransportTypes;
 @property (nonatomic, assign) SocketIOPreferedTransportType preferedTransportType;
 
 - (id) initWithDelegate:(id<SocketIODelegate>)delegate;

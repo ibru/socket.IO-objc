@@ -55,6 +55,7 @@ NSString* const SocketIOException = @"SocketIOException";
 @interface SocketIO ()
 
 @property (nonatomic, assign) BOOL isForVoIP;
+@property (nonatomic, strong) NSArray *availableTransportTypes;
 
 @end
 
@@ -748,6 +749,7 @@ NSString* const SocketIOException = @"SocketIOException";
                                         code:SocketIOTransportsNotSupported
                                     userInfo:nil];
         }
+        self.availableTransportTypes = transports;
     }
     
     // if connection didn't return the values we need -> fail
