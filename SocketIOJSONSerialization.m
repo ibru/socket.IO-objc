@@ -33,7 +33,7 @@ extern NSString * const SocketIOException;
 
 // Use by JSONKit serialization
 - (NSString *) JSONString;
-- (id) decoder;
+- (id) jsonDecoder;
 
 // Used by SBJsonWriter
 - (NSString *) stringWithObject:(id)object;
@@ -66,7 +66,7 @@ extern NSString * const SocketIOException;
     // lastly, try JSONKit
     serializer = NSClassFromString(@"JSONDecoder");
     if (serializer) {
-        return [[serializer decoder] objectWithData:data];
+        return [[serializer jsonDecoder] objectWithData:data];
     }
     
     // unable to find a suitable JSON deseralizer
